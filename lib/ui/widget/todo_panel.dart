@@ -30,11 +30,15 @@ class TodoPanel extends StatelessWidget {
               height: 1,
             ),
         itemBuilder: (bCtx, index) {
+          var todo = listTodo.elementAt(index);
           return TodoItem(
-            listTodo.elementAt(index),
+            todo,
             onCheckedChange: (checked) {
-              BlocProvider.of<TodoBloc>(context).add(UpdateTodo(
-                  listTodo.elementAt(index)..completed = checked));
+              todo.completed = checked;
+              BlocProvider.of<TodoBloc>(context).add(UpdateTodo(todo));
+            },
+            onDelete: () {
+              BlocProvider.of<TodoBloc>(context).add(DeleteTodo(todo));
             },
           );
         });

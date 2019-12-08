@@ -27,3 +27,12 @@ class UpdateTodo extends TodoEvent {
   @override
   List<Object> get props => [todo];
 }
+
+class DeleteTodo extends TodoEvent {
+  final Todo todo;
+
+  DeleteTodo(this.todo);
+
+  @override
+  List<Object> get props => [todo];
+}

@@ -4,9 +4,10 @@ import 'package:flutter_todo/util/date_time_format.dart';
 
 class TodoItem extends StatefulWidget {
   final Function(bool checked) onCheckedChange;
+  final Function() onDelete;
   final Todo todo;
 
-  TodoItem(this.todo, {this.onCheckedChange});
+  TodoItem(this.todo, {this.onCheckedChange, this.onDelete});
 
   @override
   _TodoItemState createState() => _TodoItemState();
@@ -27,6 +28,12 @@ class _TodoItemState extends State<TodoItem> {
         leading: Checkbox(value: _checked, onChanged: _onCheckedChange),
         title: Text(widget.todo.title),
         subtitle: Text(addDate),
+        trailing: IconButton(
+            icon: Icon(
+              Icons.delete_forever,
+              color: Colors.red,
+            ),
+            onPressed: widget.onDelete),
       ),
     );
   }

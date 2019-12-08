@@ -65,5 +65,17 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
           break;
       }
     }
+    if (event is DeleteTodo) {
+      var res = await _todoRepo.deleteTodo(event.todo);
+      switch (res.type) {
+        case ResourceType.Error:
+          yield UpdateTodoError(res.exception);
+          break;
+        case ResourceType.Success:
+          add(FetchListTodo());
+          yield UpdateTodoResult();
+          break;
+      }
+    }
   }
 }
