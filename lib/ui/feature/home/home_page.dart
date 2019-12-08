@@ -1,21 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todo/component/app_navigator.dart';
-import 'package:flutter_todo/ui/feature/all_todo/all_todo_page.dart';
-import 'package:flutter_todo/ui/feature/complete_todo/complete_todo_page.dart';
-import 'package:flutter_todo/ui/feature/incomplete_todo/incomplete_todo_page.dart';
+import 'package:flutter_todo/ui/bloc/todo/bloc.dart';
 import 'package:flutter_todo/ui/feature/search/simple_search_delegate.dart';
 import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
+import 'package:flutter_todo/ui/widget/common/shimmer_list.dart';
+import 'package:flutter_todo/ui/widget/todo_panel.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool _alreadyInit = false;
+  int _selectedIndex;
+  AppLocalizations _translator;
+  List<String> _appBarTitles = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_alreadyInit) {
+      _alreadyInit = true;
+      _selectedIndex = 0;
+      BlocProvider.of<TodoBloc>(context).add(FetchListTodo());
+    }
+    _translator = AppLocalizations.of(context);
+    _appBarTitles.clear();
+    _appBarTitles.add(_translator.translate('app_name'));
+    _appBarTitles.add(_translator.translate('title_incomplete_toto'));
+    _appBarTitles.add(_translator.translate('title_complete_toto'));
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
-      initialIndex: 0,
+      initialIndex: _selectedIndex,
       child: Scaffold(
         appBar: _buildAppBar(context),
         body: _buildBody(context),
         bottomNavigationBar: _buildBottomNavBar(context),
+        //floatingActionButton: _buildFloatingButton(context),
       ),
     );
   }
@@ -35,7 +62,7 @@ class HomePage extends StatelessWidget {
         ),
         onPressed: () => AppNavigator().navToSettings(context),
       ),
-      title: Text(AppLocalizations.of(context).translate('app_name')),
+      title: Text(_appBarTitles[_selectedIndex]),
       actions: <Widget>[
         IconButton(
             icon: Icon(
@@ -50,13 +77,28 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Container(
-      child: TabBarView(children: <Widget>[
-        AllTodoPage(),
-        IncompleteTodoPage(),
-        CompleteTodoPage()
-      ]),
-    );
+    return BlocBuilder<TodoBloc, TodoState>(condition: (pre, cur) {
+      return cur is FetchingListTodo ||
+          cur is FetchListTodoError ||
+          cur is FetchListTodoResult;
+    }, builder: (bCtx, state) {
+      if (state is FetchingListTodo) {
+        return ShimmerList();
+      }
+      if (state is FetchListTodoResult) {
+        return Container(
+          child: TabBarView(
+            children: <Widget>[
+              TodoPanel(state.listAllTodo),
+              TodoPanel(state.listIncompleteTodo),
+              TodoPanel(state.listCompleteTodo)
+            ],
+            physics: NeverScrollableScrollPhysics(),
+          ),
+        );
+      }
+      return Container();
+    });
   }
 
   Widget _buildBottomNavBar(BuildContext context) {
@@ -64,11 +106,32 @@ class HomePage extends StatelessWidget {
       elevation: 8,
       margin: EdgeInsets.all(0),
       shape: BeveledRectangleBorder(),
-      child: TabBar(labelColor: Theme.of(context).primaryColor, tabs: <Widget>[
-        Tab(icon: Icon(Icons.format_align_left)),
-        Tab(icon: Icon(Icons.today)),
-        Tab(icon: Icon(Icons.done_all)),
-      ]),
+      child: TabBar(
+          onTap: (position) {
+            setState(() {
+              _selectedIndex = position;
+            });
+          },
+          labelColor: Theme
+              .of(context)
+              .primaryColor,
+          tabs: <Widget>[
+            Tab(icon: Icon(Icons.format_align_left)),
+            Tab(icon: Icon(Icons.today)),
+            Tab(icon: Icon(Icons.done_all)),
+          ]),
+    );
+  }
+
+  Widget _buildFloatingButton(BuildContext context) {
+    return Builder(
+      builder: (bCtx) =>
+          FloatingActionButton(
+            onPressed: () {
+              AppNavigator().showAddTodo(bCtx);
+            },
+            child: Icon(Icons.add),
+          ),
     );
   }
 }

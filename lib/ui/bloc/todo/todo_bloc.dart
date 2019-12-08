@@ -17,24 +17,31 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   ) async* {
     if (event is FetchListTodo) {
       yield FetchingListTodo();
-      await Future.delayed(Duration(seconds: 1));
-      yield FetchListTodoResult(_listTodo);
+      var _listCompletedTodo = _listTodo.where((todo) {
+        return todo.completed;
+      }).toList();
+      var _listInCompletedTodo = _listTodo.where((todo) {
+        return !todo.completed;
+      }).toList();
+      yield FetchListTodoResult(
+          listAllTodo: _listTodo,
+          listCompleteTodo: _listCompletedTodo,
+          listIncompleteTodo: _listInCompletedTodo);
     }
     if (event is AddTodo) {
       yield AddingTodo();
-      await Future.delayed(Duration(seconds: 1));
-      _listTodo.add(event.todo);
+      _listTodo.insert(0, event.todo);
       yield AddTodoResult();
     }
     if (event is ChangeTodoState) {
-      yield AddingTodo();
-      await Future.delayed(Duration(seconds: 1));
+      yield ChangingTodoState();
       _listTodo.firstWhere((element) {
         if (element.id == event.todo.id) {
           event.todo.completed = event.todo.completed;
         }
         return element.id == event.todo.id;
       });
+      add(FetchListTodo());
       yield ChangeTodoStateResult();
     }
   }

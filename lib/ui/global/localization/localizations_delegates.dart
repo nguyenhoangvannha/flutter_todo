@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'app_localizations.dart';
 
@@ -23,7 +22,6 @@ class LocalizationsDelegates {
       GlobalMaterialLocalizations.delegate,
       GlobalWidgetsLocalizations.delegate,
       GlobalCupertinoLocalizations.delegate,
-      RefreshLocalizations.delegate
     ];
   }
 

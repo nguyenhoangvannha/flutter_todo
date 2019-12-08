@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_todo/domain/entity/todo.dart';
 
 abstract class TodoState extends Equatable {
@@ -25,12 +26,16 @@ class FetchListTodoError extends TodoState {
 }
 
 class FetchListTodoResult extends TodoState {
-  final List<Todo> listTodo;
+  final List<Todo> listAllTodo;
+  final List<Todo> listCompleteTodo;
+  final List<Todo> listIncompleteTodo;
 
-  FetchListTodoResult(this.listTodo);
+  FetchListTodoResult({@required this.listAllTodo,
+    @required this.listCompleteTodo,
+    @required this.listIncompleteTodo});
 
   @override
-  List<Object> get props => [listTodo];
+  List<Object> get props => [listAllTodo, listCompleteTodo, listIncompleteTodo];
 }
 
 class AddingTodo extends TodoState {

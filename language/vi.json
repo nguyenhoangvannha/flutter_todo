@@ -3,6 +3,10 @@
   "title_settings": "Cài đặt",
   "title_themes_dark": "Chủ đề tối",
   "title_languages": "Ngôn ngữ",
+  "title_complete_toto": "Đã hoàn thành",
+  "title_incomplete_toto": "Chưa hoàn thành",
+  "label_add_todo_suggestion": "Bạn chưa có công việc cần làm nào!",
+  "act_add_todo": "Thêm mới",
   "en_EN": "Tiếng Anh",
   "vi_VN": "Tiếng Việt"
 }

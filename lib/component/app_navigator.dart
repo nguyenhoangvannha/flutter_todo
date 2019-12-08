@@ -20,6 +20,7 @@ class AppNavigator {
   }
 
   void showAddTodo(BuildContext context) {
-    Scaffold.of(context).showBottomSheet((bCtx) => AddTodoWidget());
+    Scaffold.of(context).showBottomSheet(
+            (bCtx) => AddTodoWidget());
   }
 }

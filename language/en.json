@@ -3,6 +3,10 @@
   "title_settings": "Settings",
   "title_themes_dark": "Dark theme",
   "title_languages": "Language",
+  "title_complete_toto": "Completed",
+  "title_incomplete_toto": "Incomplete",
+  "label_add_todo_suggestion": "You have no todo yet!",
+  "act_add_todo": "Add todo",
   "en_EN": "English",
   "vi_VN": "Vietnamese"
 }

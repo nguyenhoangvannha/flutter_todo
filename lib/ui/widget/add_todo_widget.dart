@@ -17,6 +17,7 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
   TodoBloc _todoBloc;
   bool _processing = false;
   bool _alreadyInit = false;
+  bool _checked = false;
   String _errorStr = "";
 
   @override
@@ -49,7 +50,13 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
               if (_errorStr.isNotEmpty) TextError(_errorStr),
               Row(
                 children: <Widget>[
-                  Icon(Icons.radio_button_unchecked),
+                  Checkbox(
+                      value: _checked,
+                      onChanged: (checked) {
+                        setState(() {
+                          _checked = checked;
+                        });
+                      }),
                   SizedBox(
                     width: 8,
                   ),
@@ -112,7 +119,7 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
         onTap: () {
           if (_formKey.currentState.saveAndValidate()) {
             String todo = _formKey.currentState.value['todo'];
-            _addTodo(context, todo);
+            _addTodo(context, todo, _checked);
           }
         },
         child: Card(
@@ -126,10 +133,10 @@ class _AddTodoWidgetState extends State<AddTodoWidget> {
     );
   }
 
-  void _addTodo(BuildContext context, String title) {
+  void _addTodo(BuildContext context, String title, bool completed) {
     setState(() {
       _processing = true;
     });
-    _todoBloc.add(AddTodo(Todo(title)));
+    _todoBloc.add(AddTodo(Todo(title, completed: completed)));
   }
 }
