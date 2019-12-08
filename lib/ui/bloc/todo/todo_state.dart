@@ -57,17 +57,21 @@ class AddTodoResult extends TodoState {
   List<Object> get props => [];
 }
 
-class ChangingTodoState extends TodoState {
+class UpdatingTodo extends TodoState {
   @override
   List<Object> get props => [];
 }
 
-class ChangeTodoStateError extends TodoState {
+class UpdateTodoError extends TodoState {
+  final Exception exception;
+
+  UpdateTodoError(this.exception);
+
   @override
   List<Object> get props => [];
 }
 
-class ChangeTodoStateResult extends TodoState {
+class UpdateTodoResult extends TodoState {
   @override
   List<Object> get props => [];
 }

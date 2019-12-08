@@ -3,7 +3,10 @@ import 'package:flutter_todo/component/routes.dart';
 import 'package:flutter_todo/ui/application.dart';
 import 'package:flutter_todo/ui/feature/home/home_page.dart';
 
+import 'component/app_injector.dart';
+
 void main() {
+  AppInjector.init();
   runApp(MyApp());
 }
 

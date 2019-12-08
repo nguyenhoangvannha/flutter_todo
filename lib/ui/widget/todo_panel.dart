@@ -33,7 +33,7 @@ class TodoPanel extends StatelessWidget {
           return TodoItem(
             listTodo.elementAt(index),
             onCheckedChange: (checked) {
-              BlocProvider.of<TodoBloc>(context).add(ChangeTodoState(
+              BlocProvider.of<TodoBloc>(context).add(UpdateTodo(
                   listTodo.elementAt(index)..completed = checked));
             },
           );

@@ -19,10 +19,10 @@ class AddTodo extends TodoEvent {
   List<Object> get props => [todo];
 }
 
-class ChangeTodoState extends TodoEvent {
+class UpdateTodo extends TodoEvent {
   final Todo todo;
 
-  ChangeTodoState(this.todo);
+  UpdateTodo(this.todo);
 
   @override
   List<Object> get props => [todo];

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todo/ui/bloc/todo/todo_bloc.dart';
+import 'package:injector/injector.dart';
 
 import 'global/localization/ui/locale_builder.dart';
 import 'global/theme/theme_builder.dart';
@@ -16,7 +17,8 @@ class Application extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<TodoBloc>(create: (bCtx) => TodoBloc()),
+        BlocProvider<TodoBloc>(
+            create: (bCtx) => TodoBloc(Injector.appInstance.getDependency())),
       ],
       child: LocaleBuilder(
         builder: (bCtx, locale, supportedLocales, localizationsDelegates,
