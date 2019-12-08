@@ -16,8 +16,6 @@ class HomePage extends StatelessWidget {
         appBar: _buildAppBar(context),
         body: _buildBody(context),
         bottomNavigationBar: _buildBottomNavBar(context),
-        floatingActionButton: _buildFloatingButton(context),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
     );
   }
@@ -68,20 +66,9 @@ class HomePage extends StatelessWidget {
       shape: BeveledRectangleBorder(),
       child: TabBar(labelColor: Theme.of(context).primaryColor, tabs: <Widget>[
         Tab(icon: Icon(Icons.format_align_left)),
-        Tab(
-          icon: Icon(Icons.today),
-        ),
-        Tab(
-          icon: Icon(Icons.done_all),
-        ),
+        Tab(icon: Icon(Icons.today)),
+        Tab(icon: Icon(Icons.done_all)),
       ]),
-    );
-  }
-
-  Widget _buildFloatingButton(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(Icons.add),
-      onPressed: () {},
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_todo/ui/bloc/todo/todo_bloc.dart';
 
 import 'global/localization/ui/locale_builder.dart';
 import 'global/theme/theme_builder.dart';
@@ -12,17 +14,22 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LocaleBuilder(
-      builder: (bCtx, locale, supportedLocales, localizationsDelegates,
-          localeResolutionCallback) {
-        return ThemeBuilder(
-          builder: (bCtx, themeData) {
-            InitData initData = InitData(themeData, locale, supportedLocales,
-                localizationsDelegates, localeResolutionCallback);
-            return builder(bCtx, initData);
-          },
-        );
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<TodoBloc>(create: (bCtx) => TodoBloc()),
+      ],
+      child: LocaleBuilder(
+        builder: (bCtx, locale, supportedLocales, localizationsDelegates,
+            localeResolutionCallback) {
+          return ThemeBuilder(
+            builder: (bCtx, themeData) {
+              InitData initData = InitData(themeData, locale, supportedLocales,
+                  localizationsDelegates, localeResolutionCallback);
+              return builder(bCtx, initData);
+            },
+          );
+        },
+      ),
     );
   }
 }
