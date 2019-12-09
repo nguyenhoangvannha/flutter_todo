@@ -3,7 +3,7 @@ Todo Mobile Tech Challenge
 
 # Download apk
 - __[arm64-v8a](https://github.com/nguyenhoangvannha/flutter_todo/releases/download/v1.0/app-arm64-v8a-release.apk)__
-<br>
+
 - __[armeabi-v7a](https://github.com/nguyenhoangvannha/flutter_todo/releases/download/v1.0/app-armeabi-v7a-release.apk)__
 
 # Requirement:
