@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 
 class TextTitle extends StatelessWidget {
   final String data;
@@ -10,6 +11,7 @@ class TextTitle extends StatelessWidget {
     return Text(
       data,
       style: Theme.of(context).textTheme.title,
+      textAlign: TextAlign.center,
     );
   }
 }

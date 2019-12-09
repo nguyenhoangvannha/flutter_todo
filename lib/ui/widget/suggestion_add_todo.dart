@@ -15,8 +15,11 @@ class SuggestionAddTodo extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          TextTitle(suggestionMessage ??
-              trans.translate('msg_suggestion_no_todo')),
+          Padding(
+            padding: const EdgeInsets.only(left: 56, right: 56),
+            child: TextTitle(suggestionMessage ??
+                trans.translate('msg_suggestion_no_todo')),
+          ),
           SizedBox(
             height: 16,
           ),
