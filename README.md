@@ -50,7 +50,6 @@ incomplete.
 
   ## local database
   - moor_flutter: ^2.0.0
-  <br>
   - shared_preferences: ^0.5.4+8
 
   ## di
@@ -58,12 +57,10 @@ incomplete.
 
   ## ui
   - shimmer: ^1.0.1
-  <br>
   - flutter_form_builder: ^3.7.1
 
   ## utils
   - equatable: ^1.0.1
-  <br>
   - intl: ^0.15.8
 
   ## test
