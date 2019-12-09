@@ -60,7 +60,7 @@ void main() {
         return todoBloc;
       },
       act: (bloc) async => bloc.add(AddTodo(todo)),
-      expect: [InitialTodoState(), AddingTodo(), AddTodoResult(todo.id)],
+      expect: [InitialTodoState(), Loading(1), Result(todo.id)],
     );
     blocTest<TodoBloc, TodoEvent, TodoState>(
       "emits initialTodoState,AddingTodo,AddTodoError when exception",
@@ -71,7 +71,7 @@ void main() {
         return todoBloc;
       },
       act: (bloc) async => bloc.add(AddTodo(todo)),
-      expect: [InitialTodoState(), AddingTodo(), AddTodoError(Exception())],
+      expect: [InitialTodoState(), Loading(1), Error(Exception(), 1)],
     );
   });
 
@@ -86,8 +86,8 @@ void main() {
       act: (bloc) async => bloc.add(DeleteTodo(todo)),
       expect: [
         InitialTodoState(),
-        DeletingTodo(todo.id),
-        DeleteTodoResult(todo.id)
+        Loading(todo.id),
+        Result(todo.id)
       ],
     );
   });
