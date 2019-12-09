@@ -22,7 +22,7 @@ class FetchListTodoError extends TodoState {
   FetchListTodoError(this.exception);
 
   @override
-  List<Object> get props => [exception];
+  List<Object> get props => [exception.toString()];
 }
 
 class FetchListTodoResult extends TodoState {
@@ -49,48 +49,70 @@ class AddTodoError extends TodoState {
   AddTodoError(this.exception);
 
   @override
-  List<Object> get props => [exception];
+  List<Object> get props => [exception.toString()];
 }
 
 class AddTodoResult extends TodoState {
+  final int insertId;
+
+  AddTodoResult(this.insertId);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [insertId];
 }
 
 class UpdatingTodo extends TodoState {
+  final int todoId;
+
+  UpdatingTodo(this.todoId);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [todoId];
 }
 
 class UpdateTodoError extends TodoState {
   final Exception exception;
+  final int todoId;
 
-  UpdateTodoError(this.exception);
+  UpdateTodoError(this.exception, this.todoId);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [todoId];
 }
 
 class UpdateTodoResult extends TodoState {
+  final int todoId;
+
+  UpdateTodoResult(this.todoId);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [todoId];
 }
 
 class DeletingTodoTodo extends TodoState {
+  final int todoId;
+
+  DeletingTodoTodo(this.todoId);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [todoId];
 }
 
 class DeleteTodoError extends TodoState {
+  final int todoId;
   final Exception exception;
 
-  DeleteTodoError(this.exception);
+  DeleteTodoError(this.exception, this.todoId);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [todoId];
 }
 
 class DeleteTodoResult extends TodoState {
+  final int todoId;
+
+  DeleteTodoResult(this.todoId);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [todoId];
 }

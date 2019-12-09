@@ -53,7 +53,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
           break;
         case ResourceType.Success:
           _listTodo.insert(0, event.todo);
-          yield AddTodoResult();
+          yield AddTodoResult(event.todo.id);
           break;
       }
     }
@@ -61,7 +61,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       var res = await _todoRepo.updateTodo(event.todo);
       switch (res.type) {
         case ResourceType.Error:
-          yield UpdateTodoError(res.exception);
+          yield UpdateTodoError(res.exception, event.todo.id);
           break;
         case ResourceType.Success:
           _listTodo.firstWhere((todo) {
@@ -72,7 +72,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
             return false;
           });
           add(FetchListTodo());
-          yield UpdateTodoResult();
+          yield UpdateTodoResult(event.todo.id);
           break;
       }
     }
@@ -80,14 +80,14 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       var res = await _todoRepo.deleteTodo(event.todo);
       switch (res.type) {
         case ResourceType.Error:
-          yield UpdateTodoError(res.exception);
+          yield UpdateTodoError(res.exception, event.todo.id);
           break;
         case ResourceType.Success:
           _listTodo.removeWhere((m) {
             return m.id == event.todo.id;
           });
           add(FetchListTodo());
-          yield UpdateTodoResult();
+          yield UpdateTodoResult(event.todo.id);
           break;
       }
     }

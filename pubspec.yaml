@@ -39,6 +39,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^4.1.1
+  bloc_test: ^2.2.2
   #source gen
   build_runner:
   moor_generator: ^2.1.1
