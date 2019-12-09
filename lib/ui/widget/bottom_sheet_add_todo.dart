@@ -7,12 +7,12 @@ import 'package:flutter_todo/ui/bloc/todo/todo_event.dart';
 import 'package:flutter_todo/ui/bloc/todo/todo_state.dart';
 import 'package:flutter_todo/ui/widget/common/text.dart';
 
-class AddTodoWidget extends StatefulWidget {
+class BottomSheetAddTodo extends StatefulWidget {
   @override
-  _AddTodoWidgetState createState() => _AddTodoWidgetState();
+  _BottomSheetAddTodoState createState() => _BottomSheetAddTodoState();
 }
 
-class _AddTodoWidgetState extends State<AddTodoWidget> {
+class _BottomSheetAddTodoState extends State<BottomSheetAddTodo> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   TodoBloc _todoBloc;
   bool _processing = false;

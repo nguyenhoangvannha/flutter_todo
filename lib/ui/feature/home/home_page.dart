@@ -5,7 +5,7 @@ import 'package:flutter_todo/ui/bloc/todo/bloc.dart';
 import 'package:flutter_todo/ui/feature/search/simple_search_delegate.dart';
 import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
 import 'package:flutter_todo/ui/widget/common/shimmer_list.dart';
-import 'package:flutter_todo/ui/widget/todo_panel.dart';
+import 'package:flutter_todo/ui/widget/todo_list_with_add_button.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -89,9 +89,9 @@ class _HomePageState extends State<HomePage> {
         return Container(
           child: TabBarView(
             children: <Widget>[
-              TodoPanel(state.listAllTodo),
-              TodoPanel(state.listIncompleteTodo),
-              TodoPanel(state.listCompleteTodo)
+              TodoListWithAddButton(state.listAllTodo),
+              TodoListWithAddButton(state.listIncompleteTodo),
+              TodoListWithAddButton(state.listCompleteTodo)
             ],
             physics: NeverScrollableScrollPhysics(),
           ),

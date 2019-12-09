@@ -3,7 +3,7 @@ import 'package:flutter_todo/component/app_navigator.dart';
 import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
 import 'package:flutter_todo/ui/widget/common/text.dart';
 
-class AddTodoSuggestion extends StatelessWidget {
+class SuggestionAddTodo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final trans = AppLocalizations.of(context);

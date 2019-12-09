@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ShimmerList extends StatelessWidget {
+  final int length;
+
+  ShimmerList({this.length = 5});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -13,8 +17,9 @@ class ShimmerList extends StatelessWidget {
               highlightColor: Colors.grey[100],
               enabled: true,
               child: Column(
-                children:
-                    [0, 1, 2, 3, 4].map((_) => _buildItem(context)).toList(),
+                children: List.generate(length, (index) => index)
+                    .map((_) => _buildItem(context))
+                    .toList(),
               )),
           Expanded(
             child: Container(),

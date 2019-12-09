@@ -3,17 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todo/component/app_navigator.dart';
 import 'package:flutter_todo/domain/entity/todo.dart';
 import 'package:flutter_todo/ui/bloc/todo/bloc.dart';
-import 'package:flutter_todo/ui/widget/add_todo_suggestion.dart';
+import 'package:flutter_todo/ui/widget/suggestion_add_todo.dart';
 import 'package:flutter_todo/ui/widget/todo_item.dart';
 
-class TodoPanel extends StatelessWidget {
+class TodoListWithAddButton extends StatelessWidget {
   final List<Todo> listTodo;
 
-  TodoPanel(this.listTodo) : assert(listTodo != null);
+  TodoListWithAddButton(this.listTodo) : assert(listTodo != null);
 
   @override
   Widget build(BuildContext context) {
-    return listTodo.isEmpty ? AddTodoSuggestion() : _buildContent(context);
+    return listTodo.isEmpty ? SuggestionAddTodo() : _buildContent(context);
   }
 
   Widget _buildContent(BuildContext context) {
