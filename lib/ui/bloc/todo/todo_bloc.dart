@@ -45,24 +45,24 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       }
     }
     if (event is AddTodo) {
-      yield AddingTodo();
+      yield Loading(event.todo.id);
       var res = await _todoRepo.addTodo(event.todo);
       switch (res.type) {
         case ResourceType.Error:
-          yield AddTodoError(res.exception);
+          yield Error(res.exception, event.todo.id);
           break;
         case ResourceType.Success:
           _listTodo.insert(0, event.todo);
-          yield AddTodoResult(event.todo.id);
+          yield Result(event.todo.id);
           break;
       }
     }
     if (event is UpdateTodo) {
-      yield UpdatingTodo(event.todo.id);
+      yield Loading(event.todo.id);
       var res = await _todoRepo.updateTodo(event.todo);
       switch (res.type) {
         case ResourceType.Error:
-          yield UpdateTodoError(res.exception, event.todo.id);
+          yield Error(res.exception, event.todo.id);
           break;
         case ResourceType.Success:
           _listTodo.firstWhere((todo) {
@@ -73,23 +73,23 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
             return false;
           });
           add(FetchListTodo());
-          yield UpdateTodoResult(event.todo.id);
+          yield Result(event.todo.id);
           break;
       }
     }
     if (event is DeleteTodo) {
-      yield DeletingTodo(event.todo.id);
+      yield Loading(event.todo.id);
       var res = await _todoRepo.deleteTodo(event.todo);
       switch (res.type) {
         case ResourceType.Error:
-          yield DeleteTodoError(res.exception, event.todo.id);
+          yield Error(res.exception, event.todo.id);
           break;
         case ResourceType.Success:
           _listTodo.removeWhere((m) {
             return m.id == event.todo.id;
           });
           add(FetchListTodo());
-          yield DeleteTodoResult(event.todo.id);
+          yield Result(event.todo.id);
           break;
       }
     }

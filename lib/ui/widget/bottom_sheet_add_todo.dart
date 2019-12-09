@@ -101,20 +101,20 @@ class _BottomSheetAddTodoState extends State<BottomSheetAddTodo> {
   Widget _buildAddButton(BuildContext context) {
     return BlocListener<TodoBloc, TodoState>(
       condition: (pre, cur) {
-        return cur is AddingTodo || cur is AddTodoError || cur is AddTodoResult;
+        return cur is Loading || cur is Error || cur is Result;
       },
       listener: (bCtx, state) {
-        if (state is! AddingTodo) {
+        if (state is! Loading) {
           setState(() {
             _processing = false;
           });
         }
-        if (state is AddTodoError) {
+        if (state is Error) {
           setState(() {
             _errorStr = state.exception.toString();
           });
         }
-        if (state is AddTodoResult) {
+        if (state is Result) {
           _todoBloc.add(FetchListTodo());
           Navigator.of(context).pop();
         }
