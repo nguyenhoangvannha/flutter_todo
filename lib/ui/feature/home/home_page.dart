@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todo/component/app_navigator.dart';
 import 'package:flutter_todo/ui/bloc/todo/bloc.dart';
-import 'package:flutter_todo/ui/feature/search/simple_search_delegate.dart';
 import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
 import 'package:flutter_todo/ui/widget/common/shimmer_list.dart';
 import 'package:flutter_todo/ui/widget/todo_list_with_add_button.dart';
@@ -63,16 +62,6 @@ class _HomePageState extends State<HomePage> {
         onPressed: () => AppNavigator().navToSettings(context),
       ),
       title: Text(_appBarTitles[_selectedIndex]),
-      actions: <Widget>[
-        IconButton(
-            icon: Icon(
-              Icons.search,
-              size: 28,
-            ),
-            onPressed: () {
-              showSearch(context: context, delegate: SimpleSearchDelegate());
-            })
-      ],
     );
   }
 

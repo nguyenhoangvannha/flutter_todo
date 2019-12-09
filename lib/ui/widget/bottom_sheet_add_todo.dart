@@ -5,6 +5,7 @@ import 'package:flutter_todo/domain/entity/todo.dart';
 import 'package:flutter_todo/ui/bloc/todo/todo_bloc.dart';
 import 'package:flutter_todo/ui/bloc/todo/todo_event.dart';
 import 'package:flutter_todo/ui/bloc/todo/todo_state.dart';
+import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
 import 'package:flutter_todo/ui/widget/common/text.dart';
 
 class BottomSheetAddTodo extends StatefulWidget {
@@ -19,6 +20,7 @@ class _BottomSheetAddTodoState extends State<BottomSheetAddTodo> {
   bool _alreadyInit = false;
   bool _checked = false;
   String _errorStr = "";
+  AppLocalizations _trans;
 
   @override
   void didChangeDependencies() {
@@ -26,6 +28,7 @@ class _BottomSheetAddTodoState extends State<BottomSheetAddTodo> {
     if (!_alreadyInit) {
       _alreadyInit = true;
       _todoBloc = BlocProvider.of<TodoBloc>(context);
+      _trans = AppLocalizations.of(context);
     }
   }
 
@@ -68,13 +71,14 @@ class _BottomSheetAddTodoState extends State<BottomSheetAddTodo> {
                       validators: [
                         (value) {
                           if (value.trim().isEmpty) {
-                            return 'Please enter some text';
+                            return _trans.translate('message_text_required');
                           }
                           return null;
                         }
                       ],
                       decoration: InputDecoration(
-                          hintText: "Add task", border: OutlineInputBorder()),
+                          hintText: _trans.translate('hint_add_todo'),
+                          border: OutlineInputBorder()),
                     ),
                   ),
                   SizedBox(

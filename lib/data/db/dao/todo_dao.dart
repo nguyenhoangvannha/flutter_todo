@@ -11,7 +11,7 @@ class TodoDao extends DatabaseAccessor<AppDatabase> with _$TodoDaoMixin {
 
   TodoDao({@required this.db}) : super(db);
 
-  Future<List<Todo>> getAllMovies() => select(todos).get();
+  Future<List<Todo>> getAllTodo() => select(todos).get();
 
   Future<int> insertTodo(Insertable<Todo> todo) => into(todos).insert(todo);
 

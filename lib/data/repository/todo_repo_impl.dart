@@ -15,7 +15,7 @@ class TodoRepoImpl extends TodoRepo {
   Future<DataResource<List<Todo>>> getListTodo() async {
     try {
       final listTodo =
-          await _todoDao.getAllMovies().timeout(Duration(seconds: _TIME_OUT));
+      await _todoDao.getAllTodo().timeout(Duration(seconds: _TIME_OUT));
       return DataResource(ResourceType.Success,
           data: mapper.mapListDatabaseModelToTodo(listTodo));
     } catch (ex) {

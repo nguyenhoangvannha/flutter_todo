@@ -8,5 +8,8 @@
   "label_add_todo_suggestion": "You have no todo yet!",
   "act_add_todo": "Add todo",
   "en_EN": "English",
-  "vi_VN": "Vietnamese"
+  "vi_VN": "Vietnamese",
+  "subtitle_add_date": "Add date",
+  "message_text_required": "Please enter some text",
+  "hint_add_todo": "Add todo"
 }
