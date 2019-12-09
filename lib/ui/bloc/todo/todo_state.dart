@@ -89,10 +89,10 @@ class UpdateTodoResult extends TodoState {
   List<Object> get props => [todoId];
 }
 
-class DeletingTodoTodo extends TodoState {
+class DeletingTodo extends TodoState {
   final int todoId;
 
-  DeletingTodoTodo(this.todoId);
+  DeletingTodo(this.todoId);
 
   @override
   List<Object> get props => [todoId];

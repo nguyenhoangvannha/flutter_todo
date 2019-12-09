@@ -58,6 +58,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       }
     }
     if (event is UpdateTodo) {
+      yield UpdatingTodo(event.todo.id);
       var res = await _todoRepo.updateTodo(event.todo);
       switch (res.type) {
         case ResourceType.Error:
@@ -77,17 +78,18 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       }
     }
     if (event is DeleteTodo) {
+      yield DeletingTodo(event.todo.id);
       var res = await _todoRepo.deleteTodo(event.todo);
       switch (res.type) {
         case ResourceType.Error:
-          yield UpdateTodoError(res.exception, event.todo.id);
+          yield DeleteTodoError(res.exception, event.todo.id);
           break;
         case ResourceType.Success:
           _listTodo.removeWhere((m) {
             return m.id == event.todo.id;
           });
           add(FetchListTodo());
-          yield UpdateTodoResult(event.todo.id);
+          yield DeleteTodoResult(event.todo.id);
           break;
       }
     }
