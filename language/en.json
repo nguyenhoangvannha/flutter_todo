@@ -1,6 +1,7 @@
 {
   "app_name": "Flutter Todo",
   "act_add_todo": "Add todo",
+  "act_try_again": "Try again",
   "title_settings": "Settings",
   "title_themes_dark": "Dark theme",
   "title_languages": "Language",

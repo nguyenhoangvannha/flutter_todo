@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todo/component/app_navigator.dart';
+import 'package:flutter_todo/domain/entity/todo.dart';
 import 'package:flutter_todo/ui/bloc/todo/bloc.dart';
 import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
 import 'package:flutter_todo/ui/widget/common/shimmer_list.dart';
+import 'package:flutter_todo/ui/widget/common/text.dart';
 import 'package:flutter_todo/ui/widget/todo_panel.dart';
 
 class HomePage extends StatefulWidget {
@@ -41,7 +43,6 @@ class _HomePageState extends State<HomePage> {
         appBar: _buildAppBar(context),
         body: _buildBody(context),
         bottomNavigationBar: _buildBottomNavBar(context),
-        //floatingActionButton: _buildFloatingButton(context),
       ),
     );
   }
@@ -74,23 +75,14 @@ class _HomePageState extends State<HomePage> {
       if (state is FetchingListTodo) {
         return ShimmerList();
       }
+
+      if (state is FetchListTodoError) {
+        return _buildError(context, state.exception);
+      }
+
       if (state is FetchListTodoResult) {
-        return Container(
-          child: TabBarView(
-            children: <Widget>[
-              TodoPanel(state.listAllTodo,
-                suggestionMessage: _translator.translate(
-                    'msg_suggestion_no_todo'),),
-              TodoPanel(state.listIncompleteTodo,
-                suggestionMessage: _translator.translate(
-                    'msg_suggestion_no_incomplete'),),
-              TodoPanel(state.listCompleteTodo,
-                suggestionMessage: _translator.translate(
-                    'msg_suggestion_no_complete'),)
-            ],
-            physics: NeverScrollableScrollPhysics(),
-          ),
-        );
+        return _buildResult(context, state.listAllTodo, state.listCompleteTodo,
+            state.listIncompleteTodo);
       }
       return Container();
     });
@@ -118,15 +110,48 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildFloatingButton(BuildContext context) {
-    return Builder(
-      builder: (bCtx) =>
-          FloatingActionButton(
-            onPressed: () {
-              AppNavigator().showAddTodo(bCtx);
-            },
-            child: Icon(Icons.add),
+  Widget _buildResult(BuildContext context, List<Todo> listAllTodo,
+      List<Todo> listCompleteTodo, List<Todo> listIncompleteTodo) {
+    return Container(
+      child: TabBarView(
+        children: <Widget>[
+          TodoPanel(
+            listAllTodo,
+            suggestionMessage: _translator.translate('msg_suggestion_no_todo'),
           ),
+          TodoPanel(
+            listIncompleteTodo,
+            suggestionMessage:
+            _translator.translate('msg_suggestion_no_incomplete'),
+          ),
+          TodoPanel(
+            listCompleteTodo,
+            suggestionMessage:
+            _translator.translate('msg_suggestion_no_complete'),
+          )
+        ],
+        physics: NeverScrollableScrollPhysics(),
+      ),
+    );
+  }
+
+  Widget _buildError(BuildContext context, Exception exception) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          TextError(exception.toString()),
+          SizedBox(
+            height: 8,
+          ),
+          RaisedButton(
+              child: Text(_translator.translate('act_try_again')),
+              color: Colors.green,
+              onPressed: () {
+                BlocProvider.of<TodoBloc>(context).add(FetchListTodo());
+              }),
+        ],
+      ),
     );
   }
 }
