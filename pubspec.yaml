@@ -27,7 +27,6 @@ dependencies:
   #ui
   cupertino_icons: ^0.1.2
   shimmer: ^1.0.1
-  font_awesome_flutter: ^8.5.0
   flutter_form_builder: ^3.7.1
 
   #utils
