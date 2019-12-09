@@ -71,7 +71,7 @@ class _BottomSheetAddTodoState extends State<BottomSheetAddTodo> {
                       validators: [
                         (value) {
                           if (value.trim().isEmpty) {
-                            return _trans.translate('message_text_required');
+                            return _trans.translate('msg_text_required');
                           }
                           return null;
                         }

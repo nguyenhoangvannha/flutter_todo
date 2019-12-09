@@ -4,7 +4,7 @@ import 'package:flutter_todo/component/app_navigator.dart';
 import 'package:flutter_todo/ui/bloc/todo/bloc.dart';
 import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
 import 'package:flutter_todo/ui/widget/common/shimmer_list.dart';
-import 'package:flutter_todo/ui/widget/todo_list_with_add_button.dart';
+import 'package:flutter_todo/ui/widget/todo_panel.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -78,9 +78,15 @@ class _HomePageState extends State<HomePage> {
         return Container(
           child: TabBarView(
             children: <Widget>[
-              TodoListWithAddButton(state.listAllTodo),
-              TodoListWithAddButton(state.listIncompleteTodo),
-              TodoListWithAddButton(state.listCompleteTodo)
+              TodoPanel(state.listAllTodo,
+                suggestionMessage: _translator.translate(
+                    'msg_suggestion_no_todo'),),
+              TodoPanel(state.listIncompleteTodo,
+                suggestionMessage: _translator.translate(
+                    'msg_suggestion_no_incomplete'),),
+              TodoPanel(state.listCompleteTodo,
+                suggestionMessage: _translator.translate(
+                    'msg_suggestion_no_complete'),)
             ],
             physics: NeverScrollableScrollPhysics(),
           ),

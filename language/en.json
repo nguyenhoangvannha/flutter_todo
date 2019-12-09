@@ -1,15 +1,17 @@
 {
   "app_name": "Flutter Todo",
+  "act_add_todo": "Add todo",
   "title_settings": "Settings",
   "title_themes_dark": "Dark theme",
   "title_languages": "Language",
   "title_complete_toto": "Completed",
   "title_incomplete_toto": "Incomplete",
-  "label_add_todo_suggestion": "You have no todo yet!",
-  "act_add_todo": "Add todo",
-  "en_EN": "English",
-  "vi_VN": "Vietnamese",
   "subtitle_add_date": "Add date",
-  "message_text_required": "Please enter some text",
-  "hint_add_todo": "Add todo"
+  "msg_suggestion_no_todo": "You have no todo!",
+  "msg_suggestion_no_complete": "You have no completed todo!",
+  "msg_suggestion_no_incomplete": "You have no incomplete todo!",
+  "msg_text_required": "Please enter some text",
+  "hint_add_todo": "Add todo",
+  "en_EN": "English",
+  "vi_VN": "Vietnamese"
 }

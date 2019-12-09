@@ -4,6 +4,10 @@ import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
 import 'package:flutter_todo/ui/widget/common/text.dart';
 
 class SuggestionAddTodo extends StatelessWidget {
+  final String suggestionMessage;
+
+  SuggestionAddTodo({this.suggestionMessage});
+
   @override
   Widget build(BuildContext context) {
     final trans = AppLocalizations.of(context);
@@ -11,7 +15,8 @@ class SuggestionAddTodo extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          TextTitle(trans.translate('label_add_todo_suggestion')),
+          TextTitle(suggestionMessage ??
+              trans.translate('msg_suggestion_no_todo')),
           SizedBox(
             height: 16,
           ),

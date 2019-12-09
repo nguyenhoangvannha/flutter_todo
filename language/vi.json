@@ -1,15 +1,17 @@
 {
   "app_name": "Flutter Todo",
+  "act_add_todo": "Thêm mới",
   "title_settings": "Cài đặt",
   "title_themes_dark": "Chủ đề tối",
   "title_languages": "Ngôn ngữ",
   "title_complete_toto": "Đã hoàn thành",
   "title_incomplete_toto": "Chưa hoàn thành",
-  "label_add_todo_suggestion": "Bạn chưa có công việc cần làm nào!",
-  "act_add_todo": "Thêm mới",
-  "en_EN": "Tiếng Anh",
-  "vi_VN": "Tiếng Việt",
   "subtitle_add_date": "Ngày thêm",
-  "message_text_required": "Vui lòng nhập việc cần làm",
-  "hint_add_todo": "Thêm việc cần làm"
+  "msg_suggestion_no_todo": "Bạn không có công việc cần làm nào!",
+  "msg_suggestion_no_complete": "Không có công việc đã hoàn thành!",
+  "msg_suggestion_no_incomplete": "Tất cả công việc đều đã hoàn tất?",
+  "msg_text_required": "Vui lòng nhập việc cần làm",
+  "hint_add_todo": "Thêm việc cần làm",
+  "en_EN": "Tiếng Anh",
+  "vi_VN": "Tiếng Việt"
 }
