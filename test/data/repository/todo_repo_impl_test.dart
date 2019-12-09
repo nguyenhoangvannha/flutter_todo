@@ -53,10 +53,6 @@ void main() {
       when(mockTodoDao.insertTodo(argThat(isInstanceOf<db.Todo>())))
           .thenAnswer((invocation) async {
         db.Todo t = invocation.positionalArguments[0];
-        if (listTodoOrigin.indexWhere((item) => item.id == t.id) >= 0) {
-          throw Exception("Duplicate");
-        }
-        listTodoOrigin.add(t);
         return t.id;
       });
       final result = await todoRepo.addTodo(todoToAdd);
@@ -68,14 +64,7 @@ void main() {
 
     test("Shoud not add duplicate todo", () async {
       when(mockTodoDao.insertTodo(argThat(isInstanceOf<db.Todo>())))
-          .thenAnswer((invocation) async {
-        db.Todo t = invocation.positionalArguments[0];
-        if (listTodoOrigin.indexWhere((item) => item.id == t.id) >= 0) {
-          throw Exception("Duplicate");
-        }
-        listTodoOrigin.add(t);
-        return t.id;
-      });
+          .thenThrow(Exception("Duplicate"));
       final result = await todoRepo.addTodo(firstTodoInList);
       verify(mockTodoDao.insertTodo(any));
       expect(result.type, ResourceType.Error);
@@ -99,40 +88,17 @@ void main() {
   group("UpdateTodo", () {
     test("Shoud update todo", () async {
       when(mockTodoDao.updateTodo(argThat(isInstanceOf<db.Todo>())))
-          .thenAnswer((invocation) async {
-        db.Todo t = invocation.positionalArguments[0];
-        if (listTodoOrigin.contains(t)) {
-          listTodoOrigin.removeWhere((item) => item.id == t.id);
-          listTodoOrigin.add(t);
-          return true;
-        } else {
-          return false;
-        }
-      });
+          .thenAnswer((invocation) async => true);
       final result = await todoRepo.updateTodo(firstTodoInList);
       verify(mockTodoDao.updateTodo(any));
       expect(result.type, ResourceType.Success);
       expect(result.data, true);
       expect(result.exception, isNull);
-      expect(
-          firstTodoInList.title,
-          listTodoOrigin
-              .firstWhere((item) => item.id == firstTodoInList.id)
-              .title);
     });
 
     test("Shoud update todo error", () async {
       when(mockTodoDao.updateTodo(argThat(isInstanceOf<db.Todo>())))
-          .thenAnswer((invocation) async {
-        db.Todo t = invocation.positionalArguments[0];
-        if (listTodoOrigin.contains(t)) {
-          listTodoOrigin.removeWhere((item) => item.id == t.id);
-          listTodoOrigin.add(t);
-          return true;
-        } else {
-          return false;
-        }
-      });
+          .thenAnswer((invocation) async => false);
       var notInListTodo = mapper.mapDatabaseModelToTodo(
           listTodoOrigin.elementAt(0).copyWith(id: 9999));
       final result = await todoRepo.updateTodo(notInListTodo);
@@ -157,10 +123,6 @@ void main() {
       when(mockTodoDao.deleteTodo(argThat(isInstanceOf<db.Todo>())))
           .thenAnswer((invocation) async {
         final arg = invocation.positionalArguments[0];
-        if (!listTodoOrigin.contains(arg)) {
-          throw Exception("Notfound");
-        }
-        listTodoOrigin.removeWhere((item) => item.id == arg.id);
         return arg.id;
       });
       final result = await todoRepo.deleteTodo(firstTodoInList);
@@ -171,14 +133,7 @@ void main() {
 
     test("Shoud not delete unknow todo", () async {
       when(mockTodoDao.deleteTodo(argThat(isInstanceOf<db.Todo>())))
-          .thenAnswer((invocation) async {
-        final arg = invocation.positionalArguments[0];
-        if (!listTodoOrigin.contains(arg)) {
-          throw Exception("Notfound");
-        }
-        listTodoOrigin.removeWhere((item) => item.id == arg.id);
-        return arg.id;
-      });
+          .thenThrow(Exception("Notfound"));
       final unknownTodo = mapper.mapDatabaseModelToTodo(
           listTodoOrigin.elementAt(1).copyWith(id: 99999));
       final result = await todoRepo.deleteTodo(unknownTodo);
