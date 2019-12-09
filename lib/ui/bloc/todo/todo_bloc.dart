@@ -65,7 +65,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
           yield Error(res.exception, event.todo.id);
           break;
         case ResourceType.Success:
-          _listTodo.firstWhere((todo) {
+          _listTodo.forEach((todo) {
             if (todo.id == event.todo.id) {
               todo.completed = event.todo.completed;
               return true;

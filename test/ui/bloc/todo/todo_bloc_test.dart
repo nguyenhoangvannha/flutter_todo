@@ -16,7 +16,7 @@ void main() {
     todoBloc = TodoBloc(mockTodoRepo);
   });
 
-  group("FetchListTodo", () {
+  group("fetch_list_todo", () {
     blocTest<TodoBloc, TodoEvent, TodoState>(
       "emits init,fetching,result",
       build: () {
@@ -51,9 +51,9 @@ void main() {
   final todo =
       Todo("Go to school", id: 1, completed: false, dateAdded: DateTime.now());
 
-  group("AddTodo", () {
+  group("add_todo", () {
     blocTest<TodoBloc, TodoEvent, TodoState>(
-      "emits InitialTodoState,AddingTodo,AddTodoResult",
+      "emits InitialTodoState,Loading,Result",
       build: () {
         when(mockTodoRepo.addTodo(argThat(isInstanceOf<Todo>()))).thenAnswer(
             (_) async => DataResource(ResourceType.Success, data: 1));
@@ -63,7 +63,7 @@ void main() {
       expect: [InitialTodoState(), Loading(1), Result(todo.id)],
     );
     blocTest<TodoBloc, TodoEvent, TodoState>(
-      "emits initialTodoState,AddingTodo,AddTodoError when exception",
+      "emits initialTodoState,Loading,Error when exception",
       build: () {
         when(mockTodoRepo.addTodo(argThat(isInstanceOf<Todo>()))).thenAnswer(
             (_) async =>
@@ -75,20 +75,54 @@ void main() {
     );
   });
 
-  group("DeleteTodo", () {
+  group("update_todo", () {
     blocTest<TodoBloc, TodoEvent, TodoState>(
-      "emits InitialTodoState,DeletingTodo,DeleteTodoResult",
+      "emits InitialTodoState,Loading,Result",
+      build: () {
+        when(mockTodoRepo.updateTodo(argThat(isInstanceOf<Todo>()))).thenAnswer(
+                (_) async =>
+                DataResource(ResourceType.Success,
+                    data: true));
+        return todoBloc;
+      },
+      act: (bloc) async => bloc.add(UpdateTodo(todo)),
+      expect: [InitialTodoState(), Loading(1), Result(todo.id)],
+    );
+    blocTest<TodoBloc, TodoEvent, TodoState>(
+      "emits InitialTodoState,Loading,Error",
+      build: () {
+        when(mockTodoRepo.updateTodo(argThat(isInstanceOf<Todo>()))).thenAnswer(
+                (_) async =>
+                DataResource(ResourceType.Error, exception: Exception()));
+        return todoBloc;
+      },
+      act: (bloc) async => bloc.add(UpdateTodo(todo)),
+      expect: [InitialTodoState(), Loading(1), Error(Exception(), todo.id)],
+    );
+  });
+
+  group("delete_todo", () {
+    blocTest<TodoBloc, TodoEvent, TodoState>(
+      "emits InitialTodoState,Loading,Result",
       build: () {
         when(mockTodoRepo.deleteTodo(argThat(isInstanceOf<Todo>()))).thenAnswer(
             (_) async => DataResource(ResourceType.Success, data: 1));
         return todoBloc;
       },
       act: (bloc) async => bloc.add(DeleteTodo(todo)),
-      expect: [
-        InitialTodoState(),
-        Loading(todo.id),
-        Result(todo.id)
-      ],
+      expect: [InitialTodoState(), Loading(todo.id), Result(todo.id)],
+    );
+
+    blocTest<TodoBloc, TodoEvent, TodoState>(
+      "emits InitialTodoState,Loading,Error",
+      build: () {
+        when(mockTodoRepo.deleteTodo(argThat(isInstanceOf<Todo>()))).thenAnswer(
+                (_) async =>
+                DataResource(ResourceType.Error, exception: Exception()));
+        return todoBloc;
+      },
+      act: (bloc) async => bloc.add(DeleteTodo(todo)),
+      expect: [InitialTodoState(), Loading(todo.id), Error(Exception(), 1)],
     );
   });
 }
