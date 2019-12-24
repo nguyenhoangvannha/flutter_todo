@@ -15,7 +15,8 @@ dependencies:
     sdk: flutter
 
   #state management
-  flutter_bloc: ^2.1.1
+  #flutter_bloc: ^2.1.1
+  redux: ^4.0.0
 
   #local database
   moor_flutter: ^2.0.0
@@ -27,11 +28,12 @@ dependencies:
   #ui
   cupertino_icons: ^0.1.2
   shimmer: ^1.0.1
-  flutter_form_builder: ^3.7.1
+  flutter_redux: ^0.6.0
+  #flutter_form_builder: ^3.7.2
 
   #utils
   equatable: ^1.0.1
-  intl: ^0.15.8
+  intl: ^0.16.0
 
 dev_dependencies:
   #test

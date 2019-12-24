@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_todo/component/app_navigator.dart';
 import 'package:flutter_todo/domain/entity/todo.dart';
-import 'package:flutter_todo/ui/bloc/todo/bloc.dart';
-import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
-import 'package:flutter_todo/ui/widget/common/shimmer_list.dart';
 import 'package:flutter_todo/ui/widget/common/text.dart';
 import 'package:flutter_todo/ui/widget/todo_panel.dart';
 
@@ -16,7 +12,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _alreadyInit = false;
   int _selectedIndex;
-  AppLocalizations _translator;
   List<String> _appBarTitles = [];
 
   @override
@@ -25,13 +20,11 @@ class _HomePageState extends State<HomePage> {
     if (!_alreadyInit) {
       _alreadyInit = true;
       _selectedIndex = 0;
-      BlocProvider.of<TodoBloc>(context).add(FetchListTodo());
     }
-    _translator = AppLocalizations.of(context);
     _appBarTitles.clear();
-    _appBarTitles.add(_translator.translate('app_name'));
-    _appBarTitles.add(_translator.translate('title_incomplete_toto'));
-    _appBarTitles.add(_translator.translate('title_complete_toto'));
+    _appBarTitles.add(('app_name'));
+    _appBarTitles.add(('title_incomplete_toto'));
+    _appBarTitles.add(('title_complete_toto'));
   }
 
   @override
@@ -67,25 +60,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return BlocBuilder<TodoBloc, TodoState>(condition: (pre, cur) {
-      return cur is FetchingListTodo ||
-          cur is FetchListTodoError ||
-          cur is FetchListTodoResult;
-    }, builder: (bCtx, state) {
-      if (state is FetchingListTodo) {
-        return ShimmerList();
-      }
-
-      if (state is FetchListTodoError) {
-        return _buildError(context, state.exception);
-      }
-
-      if (state is FetchListTodoResult) {
-        return _buildResult(context, state.listAllTodo, state.listCompleteTodo,
-            state.listIncompleteTodo);
-      }
-      return Container();
-    });
+    return _buildResult(context, [], [], []);
   }
 
   Widget _buildBottomNavBar(BuildContext context) {
@@ -117,17 +92,17 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           TodoPanel(
             listAllTodo,
-            suggestionMessage: _translator.translate('msg_suggestion_no_todo'),
+            suggestionMessage: ('msg_suggestion_no_todo'),
           ),
           TodoPanel(
             listIncompleteTodo,
             suggestionMessage:
-            _translator.translate('msg_suggestion_no_incomplete'),
+            ('msg_suggestion_no_incomplete'),
           ),
           TodoPanel(
             listCompleteTodo,
             suggestionMessage:
-            _translator.translate('msg_suggestion_no_complete'),
+            ('msg_suggestion_no_complete'),
           )
         ],
         physics: NeverScrollableScrollPhysics(),
@@ -145,10 +120,10 @@ class _HomePageState extends State<HomePage> {
             height: 8,
           ),
           RaisedButton(
-              child: Text(_translator.translate('act_try_again')),
+              child: Text(('act_try_again')),
               color: Colors.green,
               onPressed: () {
-                BlocProvider.of<TodoBloc>(context).add(FetchListTodo());
+                //BlocProvider.of<TodoBloc>(context).add(FetchListTodo());
               }),
         ],
       ),
