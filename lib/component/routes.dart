@@ -3,7 +3,7 @@ import 'package:flutter_todo/ui/feature/home/home_page.dart';
 import 'package:flutter_todo/ui/feature/settings/settings_page.dart';
 
 class Routes {
-  static Routes _singleton;
+  static late Routes _singleton;
 
   static const String MAIN = '/';
   static const String SETTINGS = '/settings';

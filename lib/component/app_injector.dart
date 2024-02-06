@@ -6,16 +6,16 @@ import 'package:injector/injector.dart';
 
 class AppInjector {
   static void init() {
-    Injector.appInstance.registerSingleton<AppDatabase>((injector) {
+    Injector.appInstance.registerSingleton<AppDatabase>(() {
       return AppDatabase();
     });
 
-    Injector.appInstance.registerSingleton<TodoDao>((injector) {
-      return TodoDao(db: injector.getDependency());
+    Injector.appInstance.registerSingleton<TodoDao>(() {
+      return TodoDao(db: Injector.appInstance.get());
     });
 
-    Injector.appInstance.registerSingleton<TodoRepo>((injector) {
-      TodoRepo repo = TodoRepoImpl(injector.getDependency());
+    Injector.appInstance.registerSingleton<TodoRepo>(() {
+      TodoRepo repo = TodoRepoImpl(Injector.appInstance.get());
       return repo;
     });
   }

@@ -4,7 +4,7 @@ import 'package:flutter_todo/component/routes.dart';
 import 'package:flutter_todo/ui/widget/bottom_sheet_add_todo.dart';
 
 class AppNavigator {
-  static AppNavigator _singleton;
+  static late AppNavigator _singleton;
 
   AppNavigator._();
 

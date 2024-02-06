@@ -1,10 +1,10 @@
 name: flutter_todo
 description: Todo - Mobile Tech Challenge
 
-version: 1.0.0+1
+version: 1.0.1+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=3.2.6 <4.0.0'
 
 dependencies:
   flutter:
@@ -15,33 +15,32 @@ dependencies:
     sdk: flutter
 
   #state management
-  flutter_bloc: ^2.1.1
+  flutter_bloc: ^8.1.3
 
   #local database
-  moor_flutter: ^2.0.0
-  shared_preferences: ^0.5.4+8
+  drift_sqflite: ^2.0.1
+  shared_preferences: ^2.2.2
 
   #di
-  injector: ^1.0.8
+  injector: ^3.0.0
 
   #ui
-  cupertino_icons: ^0.1.2
-  shimmer: ^1.0.1
-  flutter_form_builder: ^3.7.1
+  cupertino_icons: ^1.0.6
+  shimmer: ^3.0.0
+  flutter_form_builder: ^9.2.1
 
   #utils
-  equatable: ^1.0.1
-  intl: ^0.15.8
+  equatable: ^2.0.5
+  intl: ^0.18.1
 
 dev_dependencies:
   #test
   flutter_test:
     sdk: flutter
-  mockito: ^4.1.1
-  bloc_test: ^2.2.2
+  mockito: 5.4.4
+  bloc_test: 9.1.5
   #source gen
   build_runner:
-  moor_generator: ^2.1.1
 
 
 flutter:
