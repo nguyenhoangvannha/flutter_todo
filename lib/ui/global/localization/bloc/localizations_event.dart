@@ -11,8 +11,8 @@ abstract class LocalizationsEvent extends Equatable {
 class LocaleChanged extends LocalizationsEvent {
   final Locale locale;
 
-  LocaleChanged({@required this.locale});
+  LocaleChanged({required this.locale});
 
   @override
-  List<Object> get props => [locale.languageCode, locale.countryCode];
+  List<Object> get props => [locale.languageCode];
 }

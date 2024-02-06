@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_todo/domain/entity/todo.dart';
+import 'package:flutter_todo/ui/bloc/status.dart';
 import 'package:flutter_todo/ui/bloc/todo/todo_bloc.dart';
 import 'package:flutter_todo/ui/bloc/todo/todo_event.dart';
 import 'package:flutter_todo/ui/bloc/todo/todo_state.dart';
-import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
 import 'package:flutter_todo/ui/widget/common/text.dart';
+import 'package:uuid/uuid.dart';
+
+import '../../src/l10n/app_localizations.dart';
 
 class BottomSheetAddTodo extends StatefulWidget {
   @override
@@ -15,12 +18,12 @@ class BottomSheetAddTodo extends StatefulWidget {
 
 class _BottomSheetAddTodoState extends State<BottomSheetAddTodo> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
-  TodoBloc _todoBloc;
+  late TodoBloc _todoBloc;
   bool _processing = false;
   bool _alreadyInit = false;
-  bool _checked = false;
+  bool? _checked = false;
   String _errorStr = "";
-  AppLocalizations _trans;
+  late AppLocalizations _trans;
 
   @override
   void didChangeDependencies() {
@@ -36,7 +39,7 @@ class _BottomSheetAddTodoState extends State<BottomSheetAddTodo> {
   Widget build(BuildContext context) {
     return FormBuilder(
       key: _formKey,
-      autovalidate: true,
+      autovalidateMode: AutovalidateMode.always,
       child: Card(
         elevation: 8,
         margin: EdgeInsets.all(0),
@@ -65,19 +68,17 @@ class _BottomSheetAddTodoState extends State<BottomSheetAddTodo> {
                   ),
                   Expanded(
                     child: FormBuilderTextField(
-                      attribute: "todo",
+                      name: "todo",
                       maxLines: 1,
                       autofocus: true,
-                      validators: [
-                        (value) {
-                          if (value.trim().isEmpty) {
-                            return _trans.translate('msg_text_required');
-                          }
-                          return null;
+                      validator: (value) {
+                        if (value?.trim().isEmpty ?? true) {
+                          return _trans.msg_text_required;
                         }
-                      ],
+                        return null;
+                      },
                       decoration: InputDecoration(
-                          hintText: _trans.translate('hint_add_todo'),
+                          hintText: _trans.hint_add_todo,
                           border: OutlineInputBorder()),
                     ),
                   ),
@@ -100,30 +101,33 @@ class _BottomSheetAddTodoState extends State<BottomSheetAddTodo> {
 
   Widget _buildAddButton(BuildContext context) {
     return BlocListener<TodoBloc, TodoState>(
-      condition: (pre, cur) {
-        return cur is Loading || cur is Error || cur is Result;
-      },
       listener: (bCtx, state) {
-        if (state is! Loading) {
-          setState(() {
-            _processing = false;
-          });
+        final status = state.getStatus("AddTodo");
+        switch (status) {
+          case Idle():
+            setState(() {
+              _processing = false;
+            });
+            break;
+          case Loading():
+            break;
+          case Success():
+            _todoBloc.add(FetchListTodo());
+            Navigator.of(context).pop();
+            break;
+          case Error():
+            setState(() {
+              _errorStr = status.message;
+            });
+            break;
         }
-        if (state is Error) {
-          setState(() {
-            _errorStr = state.exception.toString();
-          });
-        }
-        if (state is Result) {
-          _todoBloc.add(FetchListTodo());
-          Navigator.of(context).pop();
-        }
+        if (state is! Loading) {}
       },
       child: InkWell(
         onTap: () {
-          if (_formKey.currentState.saveAndValidate()) {
-            String todo = _formKey.currentState.value['todo'];
-            _addTodo(context, todo, _checked);
+          if (_formKey.currentState?.validate() ?? false) {
+            String todo = _formKey.currentState?.fields['todo']?.value;
+            _addTodo(context, todo, _checked ?? false);
           }
         },
         child: Card(
@@ -141,6 +145,11 @@ class _BottomSheetAddTodoState extends State<BottomSheetAddTodo> {
     setState(() {
       _processing = true;
     });
-    _todoBloc.add(AddTodo(Todo(title, completed: completed)));
+    _todoBloc.add(AddTodo(Todo(
+      title,
+      completed: completed,
+      dateAdded: DateTime.now(),
+      id: Uuid().v4(),
+    )));
   }
 }

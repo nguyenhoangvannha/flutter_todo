@@ -6,11 +6,13 @@ abstract class TodoEvent extends Equatable {
 }
 
 class FetchListTodo extends TodoEvent {
+  String get statusKey => "FetchListTodo";
   @override
   List<Object> get props => [];
 }
 
 class AddTodo extends TodoEvent {
+  String get statusKey => "AddTodo";
   final Todo todo;
 
   AddTodo(this.todo);
@@ -20,6 +22,7 @@ class AddTodo extends TodoEvent {
 }
 
 class UpdateTodo extends TodoEvent {
+  String get statusKey => "UpdateTodo";
   final Todo todo;
 
   UpdateTodo(this.todo);
@@ -29,6 +32,7 @@ class UpdateTodo extends TodoEvent {
 }
 
 class DeleteTodo extends TodoEvent {
+  String get statusKey => "DeleteTodo";
   final Todo todo;
 
   DeleteTodo(this.todo);

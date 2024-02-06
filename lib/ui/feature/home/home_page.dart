@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_todo/component/app_navigator.dart';
 import 'package:flutter_todo/domain/entity/todo.dart';
+import 'package:flutter_todo/src/l10n/app_localizations.dart';
+import 'package:flutter_todo/ui/bloc/status.dart';
 import 'package:flutter_todo/ui/bloc/todo/bloc.dart';
-import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
 import 'package:flutter_todo/ui/widget/common/shimmer_list.dart';
 import 'package:flutter_todo/ui/widget/common/text.dart';
 import 'package:flutter_todo/ui/widget/todo_panel.dart';
+
+import '../../../component/routes.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -15,8 +17,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _alreadyInit = false;
-  int _selectedIndex;
-  AppLocalizations _translator;
+  late int _selectedIndex;
+  late AppLocalizations _translator;
   List<String> _appBarTitles = [];
 
   @override
@@ -29,9 +31,9 @@ class _HomePageState extends State<HomePage> {
     }
     _translator = AppLocalizations.of(context);
     _appBarTitles.clear();
-    _appBarTitles.add(_translator.translate('app_name'));
-    _appBarTitles.add(_translator.translate('title_incomplete_toto'));
-    _appBarTitles.add(_translator.translate('title_complete_toto'));
+    _appBarTitles.add(_translator.app_name);
+    _appBarTitles.add(_translator.title_incomplete_toto);
+    _appBarTitles.add(_translator.title_complete_toto);
   }
 
   @override
@@ -47,45 +49,49 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildAppBar(BuildContext context) {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       elevation: 0,
       backgroundColor: Theme.of(context).canvasColor,
-      textTheme: Theme.of(context).textTheme,
-      iconTheme: Theme.of(context)
-          .iconTheme
-          .copyWith(color: Theme.of(context).primaryColor),
       leading: IconButton(
         icon: Icon(
           Icons.account_circle,
           size: 28,
         ),
-        onPressed: () => AppNavigator().navToSettings(context),
+        onPressed: () {
+          Navigator.pushNamed(context, Routes.SETTINGS);
+        },
       ),
       title: Text(_appBarTitles[_selectedIndex]),
     );
   }
 
   Widget _buildBody(BuildContext context) {
-    return BlocBuilder<TodoBloc, TodoState>(condition: (pre, cur) {
-      return cur is FetchingListTodo ||
-          cur is FetchListTodoError ||
-          cur is FetchListTodoResult;
-    }, builder: (bCtx, state) {
-      if (state is FetchingListTodo) {
-        return ShimmerList();
-      }
-
-      if (state is FetchListTodoError) {
-        return _buildError(context, state.exception);
-      }
-
-      if (state is FetchListTodoResult) {
-        return _buildResult(context, state.listAllTodo, state.listCompleteTodo,
-            state.listIncompleteTodo);
-      }
-      return Container();
-    });
+    return BlocBuilder<TodoBloc, TodoState>(
+      builder: (bCtx, state) {
+        final status = state.getStatus(FetchListTodo().statusKey);
+        switch (status) {
+          case Loading():
+            return ShimmerList();
+          case Idle():
+          case Success():
+            return _buildResult(
+              context,
+              state.listAllTodo.values.toList(),
+              state.listAllTodo.values
+                  .where(
+                      (element) => state.listCompleteTodo.contains(element.id))
+                  .toList(),
+              state.listAllTodo.values
+                  .where((element) =>
+                      state.listIncompleteTodo.contains(element.id))
+                  .toList(),
+            );
+          case Error():
+            return _buildError(context, status.message);
+        }
+      },
+    );
   }
 
   Widget _buildBottomNavBar(BuildContext context) {
@@ -99,9 +105,7 @@ class _HomePageState extends State<HomePage> {
               _selectedIndex = position;
             });
           },
-          labelColor: Theme
-              .of(context)
-              .primaryColor,
+          labelColor: Theme.of(context).primaryColor,
           tabs: <Widget>[
             Tab(icon: Icon(Icons.format_align_left)),
             Tab(icon: Icon(Icons.today)),
@@ -117,17 +121,15 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           TodoPanel(
             listAllTodo,
-            suggestionMessage: _translator.translate('msg_suggestion_no_todo'),
+            suggestionMessage: _translator.msg_suggestion_no_todo,
           ),
           TodoPanel(
             listIncompleteTodo,
-            suggestionMessage:
-            _translator.translate('msg_suggestion_no_incomplete'),
+            suggestionMessage: _translator.msg_suggestion_no_incomplete,
           ),
           TodoPanel(
             listCompleteTodo,
-            suggestionMessage:
-            _translator.translate('msg_suggestion_no_complete'),
+            suggestionMessage: _translator.msg_suggestion_no_complete,
           )
         ],
         physics: NeverScrollableScrollPhysics(),
@@ -135,18 +137,17 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildError(BuildContext context, Exception exception) {
+  Widget _buildError(BuildContext context, String exception) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          TextError(exception.toString()),
+          TextError(exception),
           SizedBox(
             height: 8,
           ),
-          RaisedButton(
-              child: Text(_translator.translate('act_try_again')),
-              color: Colors.green,
+          ElevatedButton(
+              child: Text(_translator.act_try_again),
               onPressed: () {
                 BlocProvider.of<TodoBloc>(context).add(FetchListTodo());
               }),

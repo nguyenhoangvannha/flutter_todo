@@ -19,6 +19,10 @@ dependencies:
 
   #local database
   drift_sqflite: ^2.0.1
+  drift: ^2.15.0
+  sqlite3_flutter_libs: ^0.5.0
+  path_provider: ^2.0.0
+  path: ^1.8.3
   shared_preferences: ^2.2.2
 
   #di
@@ -33,6 +37,10 @@ dependencies:
   equatable: ^2.0.5
   intl: ^0.18.1
 
+  built_value: ^8.9.0
+  built_collection: ^5.1.1
+  uuid: ^4.3.3
+
 dev_dependencies:
   #test
   flutter_test:
@@ -40,16 +48,13 @@ dev_dependencies:
   mockito: 5.4.4
   bloc_test: 9.1.5
   #source gen
-  build_runner:
-
+  build_runner: ^2.4.8
+  built_value_generator: ^8.9.0
+  drift_dev: ^2.15.0
 
 flutter:
 
   uses-material-design: true
-
-  assets:
-    - language/en.json
-    - language/vi.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,15 +1,15 @@
 import 'package:flutter_todo/data/db/table/todo_table.dart';
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:drift/drift.dart';
 
 import '../moor_database.dart';
 
 part 'todo_dao.g.dart';
 
-@UseDao(tables: [Todos])
+@DriftAccessor(tables: [Todos])
 class TodoDao extends DatabaseAccessor<AppDatabase> with _$TodoDaoMixin {
   AppDatabase db;
 
-  TodoDao({@required this.db}) : super(db);
+  TodoDao({required this.db}) : super(db);
 
   Future<List<Todo>> getAllTodo() => select(todos).get();
 

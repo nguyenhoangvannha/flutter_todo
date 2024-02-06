@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todo/component/app_navigator.dart';
-import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
 import 'package:flutter_todo/ui/widget/common/text.dart';
+
+import '../../src/l10n/app_localizations.dart';
+import 'bottom_sheet_add_todo.dart';
 
 class SuggestionAddTodo extends StatelessWidget {
   final String suggestionMessage;
 
-  SuggestionAddTodo({this.suggestionMessage});
+  SuggestionAddTodo({required this.suggestionMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +18,17 @@ class SuggestionAddTodo extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 56, right: 56),
-            child: TextTitle(suggestionMessage ??
-                trans.translate('msg_suggestion_no_todo')),
+            child: TextTitle(suggestionMessage ?? trans.msg_suggestion_no_todo),
           ),
           SizedBox(
             height: 16,
           ),
-          RaisedButton(
-              child: Text(trans.translate('act_add_todo')),
-              color: Theme.of(context).primaryColor,
-              onPressed: () => AppNavigator().showAddTodo(context))
+          ElevatedButton(
+              child: Text(trans.act_add_todo),
+              onPressed: () {
+                Scaffold.of(context)
+                    .showBottomSheet((bCtx) => BottomSheetAddTodo());
+              }),
         ],
       ),
     );

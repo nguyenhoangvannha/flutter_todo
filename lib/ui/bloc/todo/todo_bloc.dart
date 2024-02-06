@@ -1,103 +1,109 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter_todo/domain/entity/todo.dart';
 import 'package:flutter_todo/domain/repository/todo_repo.dart';
-import 'package:flutter_todo/util/resource.dart';
+import 'package:flutter_todo/ui/bloc/status.dart';
 
 import './bloc.dart';
 
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final TodoRepo _todoRepo;
 
-  TodoBloc(this._todoRepo);
+  TodoBloc(this._todoRepo) : super(TodoState()) {
+    on<FetchListTodo>((event, emit) async {
+      try {
+        emit(state.rebuild((p0) => p0.statuses[event.statusKey] = Loading()));
+        final listAllTodo = await _todoRepo.getListTodo();
+        print("listAllTodo");
+        print(listAllTodo);
+        emit(state.rebuild((p0) => p0
+          ..statuses[event.statusKey] = Success()
+          ..listAllTodo = MapBuilder(listAllTodo)
+          ..listCompleteTodo =
+              SetBuilder(_getListTodoByType(listAllTodo.values, true))
+          ..listIncompleteTodo =
+              SetBuilder(_getListTodoByType(listAllTodo.values, false))));
+      } catch (e, s) {
+        emit(state.rebuild((p0) =>
+            p0..statuses[event.statusKey] = Error(message: e.toString())));
+      }
+    });
 
-  @override
-  TodoState get initialState => InitialTodoState();
+    on<AddTodo>((event, emit) async {
+      try {
+        emit(state.rebuild((p0) => p0.statuses[event.statusKey] = Loading()));
+        await _todoRepo.addTodo(event.todo);
+        emit(state.rebuild(
+          (p0) => p0
+            ..statuses[event.statusKey] = Success()
+            ..todoId = event.todo.id,
+        ));
+      } catch (e, s) {
+        emit(state.rebuild((p0) => p0
+          ..statuses[event.statusKey] =
+              Error(data: event.todo.id, message: e.toString())));
+      } finally {
+        emit(state.rebuild((p0) => p0.statuses[event.statusKey] = Idle(
+              data: event.todo.id,
+            )));
+      }
+    });
+    on<UpdateTodo>((event, emit) async {
+      try {
+        emit(state.rebuild((p0) => p0.statuses[event.statusKey] = Loading()));
+        await _todoRepo.updateTodo(event.todo);
+        final todos =
+            state.listAllTodo.rebuild((p0) => p0[event.todo.id] = event.todo);
 
-  List<Todo> _listTodo = [];
+        emit(state.rebuild((p0) => p0
+          ..statuses[event.statusKey] = Success()
+          ..listAllTodo = todos.toBuilder()
+          ..listCompleteTodo =
+              SetBuilder(_getListTodoByType(todos.values, true))
+          ..listIncompleteTodo =
+              SetBuilder(_getListTodoByType(todos.values, false))));
+      } catch (e, s) {
+        emit(state.rebuild((p0) => p0
+          ..statuses[event.statusKey] =
+              Error(data: event.todo.id, message: e.toString())));
+      } finally {
+        emit(state.rebuild((p0) => p0.statuses[event.statusKey] = Idle(
+              data: event.todo.id,
+            )));
+      }
+    });
 
-  @override
-  Stream<TodoState> mapEventToState(
-    TodoEvent event,
-  ) async* {
-    if (event is FetchListTodo) {
-      if (_listTodo != null && _listTodo.isNotEmpty) {
-        yield FetchListTodoResult(
-            listAllTodo: _listTodo,
-            listCompleteTodo: _getListTodoByType(_listTodo, true),
-            listIncompleteTodo: _getListTodoByType(_listTodo, false));
-      } else {
-        yield FetchingListTodo();
-        var res = await _todoRepo.getListTodo();
-        switch (res.type) {
-          case ResourceType.Error:
-            yield FetchListTodoError(res.exception);
-            break;
-          case ResourceType.Success:
-            _listTodo = res.data;
-            yield FetchListTodoResult(
-                listAllTodo: _listTodo,
-                listCompleteTodo: _getListTodoByType(_listTodo, true),
-                listIncompleteTodo: _getListTodoByType(_listTodo, false));
-            break;
-        }
+    on<DeleteTodo>((event, emit) async {
+      try {
+        emit(state.rebuild((p0) => p0.statuses[event.statusKey] = Loading()));
+        await _todoRepo.deleteTodo(event.todo);
+        final todos = state.listAllTodo.rebuild(
+            (p0) => p0.removeWhere((key, value) => key == event.todo.id));
+        emit(state.rebuild((p0) => p0
+          ..statuses[event.statusKey] = Success()
+          ..listAllTodo = todos.toBuilder()
+          ..listCompleteTodo =
+              SetBuilder(_getListTodoByType(todos.values, true))
+          ..listIncompleteTodo =
+              SetBuilder(_getListTodoByType(todos.values, false))));
+      } catch (e, s) {
+        emit(state.rebuild((p0) => p0
+          ..statuses[event.statusKey] =
+              Error(data: event.todo.id, message: e.toString())));
+      } finally {
+        emit(state.rebuild((p0) => p0.statuses[event.statusKey] = Idle(
+              data: event.todo.id,
+            )));
       }
-    }
-    if (event is AddTodo) {
-      yield Loading(event.todo.id);
-      var res = await _todoRepo.addTodo(event.todo);
-      switch (res.type) {
-        case ResourceType.Error:
-          yield Error(res.exception, event.todo.id);
-          break;
-        case ResourceType.Success:
-          _listTodo.insert(0, event.todo);
-          yield Result(event.todo.id);
-          break;
-      }
-    }
-    if (event is UpdateTodo) {
-      yield Loading(event.todo.id);
-      var res = await _todoRepo.updateTodo(event.todo);
-      switch (res.type) {
-        case ResourceType.Error:
-          yield Error(res.exception, event.todo.id);
-          break;
-        case ResourceType.Success:
-          _listTodo.forEach((todo) {
-            if (todo.id == event.todo.id) {
-              todo.completed = event.todo.completed;
-              return true;
-            }
-            return false;
-          });
-          add(FetchListTodo());
-          yield Result(event.todo.id);
-          break;
-      }
-    }
-    if (event is DeleteTodo) {
-      yield Loading(event.todo.id);
-      var res = await _todoRepo.deleteTodo(event.todo);
-      switch (res.type) {
-        case ResourceType.Error:
-          yield Error(res.exception, event.todo.id);
-          break;
-        case ResourceType.Success:
-          _listTodo.removeWhere((m) {
-            return m.id == event.todo.id;
-          });
-          add(FetchListTodo());
-          yield Result(event.todo.id);
-          break;
-      }
-    }
+    });
   }
 
-  List<Todo> _getListTodoByType(List<Todo> listTodo, bool _completed) {
-    return listTodo.where((todo) {
-      return todo.completed == _completed;
-    }).toList();
+  Set<String> _getListTodoByType(Iterable<Todo> listTodo, bool _completed) {
+    return listTodo
+        .where((todo) {
+          return todo.completed == _completed;
+        })
+        .map((e) => e.id)
+        .toSet();
   }
 }

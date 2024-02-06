@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/domain/entity/todo.dart';
-import 'package:flutter_todo/ui/global/localization/app_localizations.dart';
 import 'package:flutter_todo/util/date_time_format.dart';
 
+import '../../src/l10n/app_localizations.dart';
+
 class TodoItem extends StatefulWidget {
-  final Function(bool checked) onCheckedChange;
+  final Function(bool? checked) onCheckedChange;
   final Function() onDelete;
   final Todo todo;
 
-  TodoItem(this.todo, {this.onCheckedChange, this.onDelete});
+  TodoItem(this.todo, {required this.onCheckedChange, required this.onDelete});
 
   @override
   _TodoItemState createState() => _TodoItemState();
 }
 
 class _TodoItemState extends State<TodoItem> {
-  bool _checked = false;
+  bool? _checked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class _TodoItemState extends State<TodoItem> {
       child: ListTile(
         leading: Checkbox(value: _checked, onChanged: _onCheckedChange),
         title: Text(widget.todo.title),
-        subtitle: Text(trans.translate('subtitle_add_date') + " " + addDate),
+        subtitle: Text(trans.subtitle_add_date + " " + addDate),
         trailing: IconButton(
             icon: Icon(
               Icons.delete_forever,
@@ -40,7 +41,7 @@ class _TodoItemState extends State<TodoItem> {
     );
   }
 
-  void _onCheckedChange(bool checked) {
+  void _onCheckedChange(bool? checked) {
     setState(() {
       _checked = checked;
     });

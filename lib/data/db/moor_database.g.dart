@@ -2,85 +2,155 @@
 
 part of 'moor_database.dart';
 
-// **************************************************************************
-// MoorGenerator
-// **************************************************************************
+// ignore_for_file: type=lint
+class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TodosTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _completedMeta =
+      const VerificationMeta('completed');
+  @override
+  late final GeneratedColumn<bool> completed = GeneratedColumn<bool>(
+      'completed', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("completed" IN (0, 1))'),
+      defaultValue: Constant(false));
+  static const VerificationMeta _dateAddedMeta =
+      const VerificationMeta('dateAdded');
+  @override
+  late final GeneratedColumn<DateTime> dateAdded = GeneratedColumn<DateTime>(
+      'date_added', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, title, completed, dateAdded];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'todos';
+  @override
+  VerificationContext validateIntegrity(Insertable<Todo> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('completed')) {
+      context.handle(_completedMeta,
+          completed.isAcceptableOrUnknown(data['completed']!, _completedMeta));
+    }
+    if (data.containsKey('date_added')) {
+      context.handle(_dateAddedMeta,
+          dateAdded.isAcceptableOrUnknown(data['date_added']!, _dateAddedMeta));
+    } else if (isInserting) {
+      context.missing(_dateAddedMeta);
+    }
+    return context;
+  }
 
-// ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Todo map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Todo(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      completed: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}completed'])!,
+      dateAdded: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}date_added'])!,
+    );
+  }
+
+  @override
+  $TodosTable createAlias(String alias) {
+    return $TodosTable(attachedDatabase, alias);
+  }
+}
+
 class Todo extends DataClass implements Insertable<Todo> {
-  final int id;
+  final String id;
   final String title;
   final bool completed;
   final DateTime dateAdded;
+  const Todo(
+      {required this.id,
+      required this.title,
+      required this.completed,
+      required this.dateAdded});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['title'] = Variable<String>(title);
+    map['completed'] = Variable<bool>(completed);
+    map['date_added'] = Variable<DateTime>(dateAdded);
+    return map;
+  }
 
-  Todo(
-      {@required this.id,
-      @required this.title,
-      this.completed,
-      @required this.dateAdded});
-
-  factory Todo.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String prefix}) {
-    final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    final boolType = db.typeSystem.forDartType<bool>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
-    return Todo(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
-      title:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}title']),
-      completed:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}completed']),
-      dateAdded: dateTimeType
-          .mapFromDatabaseResponse(data['${effectivePrefix}date_added']),
+  TodosCompanion toCompanion(bool nullToAbsent) {
+    return TodosCompanion(
+      id: Value(id),
+      title: Value(title),
+      completed: Value(completed),
+      dateAdded: Value(dateAdded),
     );
   }
 
   factory Todo.fromJson(Map<String, dynamic> json,
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
     return Todo(
-      id: serializer.fromJson<int>(json['id']),
+      id: serializer.fromJson<String>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       completed: serializer.fromJson<bool>(json['completed']),
       dateAdded: serializer.fromJson<DateTime>(json['dateAdded']),
     );
   }
-
   @override
-  Map<String, dynamic> toJson(
-      {ValueSerializer serializer = const ValueSerializer.defaults()}) {
-    return {
-      'id': serializer.toJson<int>(id),
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
       'title': serializer.toJson<String>(title),
       'completed': serializer.toJson<bool>(completed),
       'dateAdded': serializer.toJson<DateTime>(dateAdded),
     };
   }
 
-  @override
-  TodosCompanion createCompanion(bool nullToAbsent) {
-    return TodosCompanion(
-      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
-      title:
-          title == null && nullToAbsent ? const Value.absent() : Value(title),
-      completed: completed == null && nullToAbsent
-          ? const Value.absent()
-          : Value(completed),
-      dateAdded: dateAdded == null && nullToAbsent
-          ? const Value.absent()
-          : Value(dateAdded),
-    );
-  }
-
-  Todo copyWith({int id, String title, bool completed, DateTime dateAdded}) =>
+  Todo copyWith(
+          {String? id, String? title, bool? completed, DateTime? dateAdded}) =>
       Todo(
         id: id ?? this.id,
         title: title ?? this.title,
         completed: completed ?? this.completed,
         dateAdded: dateAdded ?? this.dateAdded,
       );
-
   @override
   String toString() {
     return (StringBuffer('Todo(')
@@ -93,11 +163,9 @@ class Todo extends DataClass implements Insertable<Todo> {
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode,
-      $mrjc(title.hashCode, $mrjc(completed.hashCode, dateAdded.hashCode))));
-
+  int get hashCode => Object.hash(id, title, completed, dateAdded);
   @override
-  bool operator ==(other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Todo &&
           other.id == this.id &&
@@ -107,183 +175,98 @@ class Todo extends DataClass implements Insertable<Todo> {
 }
 
 class TodosCompanion extends UpdateCompanion<Todo> {
-  final Value<int> id;
+  final Value<String> id;
   final Value<String> title;
   final Value<bool> completed;
   final Value<DateTime> dateAdded;
-
+  final Value<int> rowid;
   const TodosCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.completed = const Value.absent(),
     this.dateAdded = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
-
   TodosCompanion.insert({
-    @required int id,
-    @required String title,
+    required String id,
+    required String title,
     this.completed = const Value.absent(),
-    @required DateTime dateAdded,
+    required DateTime dateAdded,
+    this.rowid = const Value.absent(),
   })  : id = Value(id),
         title = Value(title),
         dateAdded = Value(dateAdded);
+  static Insertable<Todo> custom({
+    Expression<String>? id,
+    Expression<String>? title,
+    Expression<bool>? completed,
+    Expression<DateTime>? dateAdded,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (completed != null) 'completed': completed,
+      if (dateAdded != null) 'date_added': dateAdded,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
 
   TodosCompanion copyWith(
-      {Value<int> id,
-      Value<String> title,
-      Value<bool> completed,
-      Value<DateTime> dateAdded}) {
+      {Value<String>? id,
+      Value<String>? title,
+      Value<bool>? completed,
+      Value<DateTime>? dateAdded,
+      Value<int>? rowid}) {
     return TodosCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       completed: completed ?? this.completed,
       dateAdded: dateAdded ?? this.dateAdded,
-    );
-  }
-}
-
-class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
-  final GeneratedDatabase _db;
-  final String _alias;
-
-  $TodosTable(this._db, [this._alias]);
-
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedIntColumn _id;
-
-  @override
-  GeneratedIntColumn get id => _id ??= _constructId();
-
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn(
-      'id',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _titleMeta = const VerificationMeta('title');
-  GeneratedTextColumn _title;
-
-  @override
-  GeneratedTextColumn get title => _title ??= _constructTitle();
-
-  GeneratedTextColumn _constructTitle() {
-    return GeneratedTextColumn(
-      'title',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _completedMeta = const VerificationMeta('completed');
-  GeneratedBoolColumn _completed;
-
-  @override
-  GeneratedBoolColumn get completed => _completed ??= _constructCompleted();
-
-  GeneratedBoolColumn _constructCompleted() {
-    return GeneratedBoolColumn('completed', $tableName, true,
-        defaultValue: Constant(false));
-  }
-
-  final VerificationMeta _dateAddedMeta = const VerificationMeta('dateAdded');
-  GeneratedDateTimeColumn _dateAdded;
-
-  @override
-  GeneratedDateTimeColumn get dateAdded => _dateAdded ??= _constructDateAdded();
-
-  GeneratedDateTimeColumn _constructDateAdded() {
-    return GeneratedDateTimeColumn(
-      'date_added',
-      $tableName,
-      false,
+      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, title, completed, dateAdded];
-
-  @override
-  $TodosTable get asDslTable => this;
-
-  @override
-  String get $tableName => _alias ?? 'todos';
-  @override
-  final String actualTableName = 'todos';
-
-  @override
-  VerificationContext validateIntegrity(TodosCompanion d,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    if (d.id.present) {
-      context.handle(_idMeta, id.isAcceptableValue(d.id.value, _idMeta));
-    } else if (id.isRequired && isInserting) {
-      context.missing(_idMeta);
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
     }
-    if (d.title.present) {
-      context.handle(
-          _titleMeta, title.isAcceptableValue(d.title.value, _titleMeta));
-    } else if (title.isRequired && isInserting) {
-      context.missing(_titleMeta);
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
     }
-    if (d.completed.present) {
-      context.handle(_completedMeta,
-          completed.isAcceptableValue(d.completed.value, _completedMeta));
-    } else if (completed.isRequired && isInserting) {
-      context.missing(_completedMeta);
+    if (completed.present) {
+      map['completed'] = Variable<bool>(completed.value);
     }
-    if (d.dateAdded.present) {
-      context.handle(_dateAddedMeta,
-          dateAdded.isAcceptableValue(d.dateAdded.value, _dateAddedMeta));
-    } else if (dateAdded.isRequired && isInserting) {
-      context.missing(_dateAddedMeta);
+    if (dateAdded.present) {
+      map['date_added'] = Variable<DateTime>(dateAdded.value);
     }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-
-  @override
-  Todo map(Map<String, dynamic> data, {String tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Todo.fromData(data, _db, prefix: effectivePrefix);
-  }
-
-  @override
-  Map<String, Variable> entityToSql(TodosCompanion d) {
-    final map = <String, Variable>{};
-    if (d.id.present) {
-      map['id'] = Variable<int, IntType>(d.id.value);
-    }
-    if (d.title.present) {
-      map['title'] = Variable<String, StringType>(d.title.value);
-    }
-    if (d.completed.present) {
-      map['completed'] = Variable<bool, BoolType>(d.completed.value);
-    }
-    if (d.dateAdded.present) {
-      map['date_added'] = Variable<DateTime, DateTimeType>(d.dateAdded.value);
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
     }
     return map;
   }
 
   @override
-  $TodosTable createAlias(String alias) {
-    return $TodosTable(_db, alias);
+  String toString() {
+    return (StringBuffer('TodosCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('completed: $completed, ')
+          ..write('dateAdded: $dateAdded, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
   }
 }
 
 abstract class _$AppDatabase extends GeneratedDatabase {
-  _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
-  $TodosTable _todos;
-
-  $TodosTable get todos => _todos ??= $TodosTable(this);
-  TodoDao _todoDao;
-
-  TodoDao get todoDao => _todoDao ??= TodoDao(db: this as AppDatabase);
-
+  _$AppDatabase(QueryExecutor e) : super(e);
+  late final $TodosTable todos = $TodosTable(this);
   @override
-  List<TableInfo> get allTables => [todos];
+  Iterable<TableInfo<Table, Object?>> get allTables =>
+      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities => [todos];
 }

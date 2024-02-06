@@ -11,12 +11,11 @@ class AppInjector {
     });
 
     Injector.appInstance.registerSingleton<TodoDao>(() {
-      return TodoDao(db: Injector.appInstance.get());
+      return TodoDao(db: Injector.appInstance.get<AppDatabase>());
     });
 
     Injector.appInstance.registerSingleton<TodoRepo>(() {
-      TodoRepo repo = TodoRepoImpl(Injector.appInstance.get());
-      return repo;
+      return TodoRepoImpl(Injector.appInstance.get());
     });
   }
 }

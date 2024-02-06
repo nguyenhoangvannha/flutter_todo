@@ -6,7 +6,6 @@ import 'package:flutter_todo/data/db/moor_database.dart' as db;
 import 'package:flutter_todo/data/mapper/mapper.dart';
 import 'package:flutter_todo/data/repository/todo_repo_impl.dart';
 import 'package:flutter_todo/domain/entity/todo.dart';
-import 'package:flutter_todo/util/resource.dart';
 import 'package:mockito/mockito.dart';
 
 class MockTodoDao extends Mock implements TodoDao {}

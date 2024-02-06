@@ -80,9 +80,7 @@ void main() {
       "emits InitialTodoState,Loading,Result",
       build: () {
         when(mockTodoRepo.updateTodo(argThat(isInstanceOf<Todo>()))).thenAnswer(
-                (_) async =>
-                DataResource(ResourceType.Success,
-                    data: true));
+            (_) async => DataResource(ResourceType.Success, data: true));
         return todoBloc;
       },
       act: (bloc) async => bloc.add(UpdateTodo(todo)),
@@ -92,7 +90,7 @@ void main() {
       "emits InitialTodoState,Loading,Error",
       build: () {
         when(mockTodoRepo.updateTodo(argThat(isInstanceOf<Todo>()))).thenAnswer(
-                (_) async =>
+            (_) async =>
                 DataResource(ResourceType.Error, exception: Exception()));
         return todoBloc;
       },
@@ -117,7 +115,7 @@ void main() {
       "emits InitialTodoState,Loading,Error",
       build: () {
         when(mockTodoRepo.deleteTodo(argThat(isInstanceOf<Todo>()))).thenAnswer(
-                (_) async =>
+            (_) async =>
                 DataResource(ResourceType.Error, exception: Exception()));
         return todoBloc;
       },

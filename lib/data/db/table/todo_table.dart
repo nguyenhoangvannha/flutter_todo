@@ -1,12 +1,11 @@
-import 'package:moor_flutter/moor_flutter.dart';
+import 'package:drift/drift.dart';
 
 class Todos extends Table {
-  IntColumn get id => integer()();
+  TextColumn get id => text()();
 
   TextColumn get title => text()();
 
-  BoolColumn get completed =>
-      boolean().nullable().withDefault(Constant(false))();
+  BoolColumn get completed => boolean().withDefault(Constant(false))();
 
   DateTimeColumn get dateAdded => dateTime()();
 

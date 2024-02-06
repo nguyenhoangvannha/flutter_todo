@@ -10,7 +10,7 @@ class TextTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       data,
-      style: Theme.of(context).textTheme.title,
+      style: Theme.of(context).textTheme.titleMedium,
       textAlign: TextAlign.center,
     );
   }
@@ -25,7 +25,8 @@ class TextError extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       data,
-      style: Theme.of(context).textTheme.title.copyWith(color: Colors.red),
+      style:
+          Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.red),
     );
   }
 }

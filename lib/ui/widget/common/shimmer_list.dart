@@ -13,8 +13,8 @@ class ShimmerList extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
         child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
           Shimmer.fromColors(
-              baseColor: Colors.grey[300],
-              highlightColor: Colors.grey[100],
+              baseColor: Colors.grey,
+              highlightColor: Colors.greenAccent,
               enabled: true,
               child: Column(
                 children: List.generate(length, (index) => index)

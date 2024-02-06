@@ -2,10 +2,7 @@
 
 part of 'todo_dao.dart';
 
-// **************************************************************************
-// DaoGenerator
-// **************************************************************************
-
+// ignore_for_file: type=lint
 mixin _$TodoDaoMixin on DatabaseAccessor<AppDatabase> {
-  $TodosTable get todos => db.todos;
+  $TodosTable get todos => attachedDatabase.todos;
 }

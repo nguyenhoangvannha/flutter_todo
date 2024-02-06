@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_todo/component/app_navigator.dart';
 import 'package:flutter_todo/domain/entity/todo.dart';
 import 'package:flutter_todo/ui/bloc/todo/bloc.dart';
 import 'package:flutter_todo/ui/widget/suggestion_add_todo.dart';
 import 'package:flutter_todo/ui/widget/todo_item.dart';
+import 'package:flutter_todo/ui/bloc/status.dart';
+
+import 'bottom_sheet_add_todo.dart';
 
 class TodoPanel extends StatelessWidget {
   final List<Todo> listTodo;
   final String suggestionMessage;
 
-  TodoPanel(this.listTodo, {this.suggestionMessage}) : assert(listTodo != null);
+  TodoPanel(this.listTodo, {required this.suggestionMessage})
+      : assert(listTodo != null);
 
   @override
   Widget build(BuildContext context) {
     return listTodo.isEmpty
         ? SuggestionAddTodo(
-      suggestionMessage: this.suggestionMessage,
-    )
+            suggestionMessage: this.suggestionMessage,
+          )
         : _buildContent(context);
   }
 
@@ -30,14 +33,15 @@ class TodoPanel extends StatelessWidget {
 
   Widget _buildList(BuildContext context, List<Todo> listTodo) {
     return BlocListener<TodoBloc, TodoState>(
-      condition: (pre, cur) {
+      listenWhen: (pre, cur) {
         return cur is Error &&
             (listTodo.indexWhere((item) => item.id == cur.todoId) >= 0);
       },
       listener: (bCtx, state) {
-        if (state is Error) {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text("Error ${state.exception.toString()}"),
+        final status = state.getStatus("UpdateTodo");
+        if (status is Error) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Error ${status.message}"),
           ));
           var item = listTodo.firstWhere((item) => item.id == state.todoId);
           item.completed = !item.completed;
@@ -45,8 +49,7 @@ class TodoPanel extends StatelessWidget {
       },
       child: ListView.separated(
           itemCount: listTodo.length,
-          separatorBuilder: (bCtx, index) =>
-              Divider(
+          separatorBuilder: (bCtx, index) => Divider(
                 height: 1,
               ),
           itemBuilder: (bCtx, index) {
@@ -54,7 +57,7 @@ class TodoPanel extends StatelessWidget {
             return TodoItem(
               todo,
               onCheckedChange: (checked) {
-                todo.completed = checked;
+                todo.completed = checked ?? false;
                 BlocProvider.of<TodoBloc>(context).add(UpdateTodo(todo));
               },
               onDelete: () {
@@ -68,7 +71,7 @@ class TodoPanel extends StatelessWidget {
   Widget _buildFloatingButton(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        AppNavigator().showAddTodo(context);
+        Scaffold.of(context).showBottomSheet((bCtx) => BottomSheetAddTodo());
       },
       child: Icon(Icons.add),
     );
