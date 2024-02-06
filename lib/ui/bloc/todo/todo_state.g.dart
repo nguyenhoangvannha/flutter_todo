@@ -111,7 +111,9 @@ class TodoStateBuilder implements Builder<TodoState, TodoStateBuilder> {
   String? get todoId => _$this._todoId;
   set todoId(String? todoId) => _$this._todoId = todoId;
 
-  TodoStateBuilder();
+  TodoStateBuilder() {
+    TodoState._init(this);
+  }
 
   TodoStateBuilder get _$this {
     final $v = _$v;
@@ -141,7 +143,6 @@ class TodoStateBuilder implements Builder<TodoState, TodoStateBuilder> {
   TodoState build() => _build();
 
   _$TodoState _build() {
-    TodoState._init(this);
     _$TodoState _$result;
     try {
       _$result = _$v ??

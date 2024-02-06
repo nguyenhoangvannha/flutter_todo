@@ -19,7 +19,7 @@ abstract class TodoState implements Built<TodoState, TodoStateBuilder> {
 
   String get todoId;
 
-  @BuiltValueHook(finalizeBuilder: true)
+  @BuiltValueHook(initializeBuilder: true)
   static void _init(TodoStateBuilder b) => b
     ..statuses = MapBuilder()
     ..listAllTodo = MapBuilder()

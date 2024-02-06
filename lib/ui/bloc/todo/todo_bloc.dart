@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter_todo/domain/entity/todo.dart';
@@ -10,24 +12,27 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final TodoRepo _todoRepo;
 
   TodoBloc(this._todoRepo) : super(TodoState()) {
-    on<FetchListTodo>((event, emit) async {
-      try {
-        emit(state.rebuild((p0) => p0.statuses[event.statusKey] = Loading()));
-        final listAllTodo = await _todoRepo.getListTodo();
-        print("listAllTodo");
-        print(listAllTodo);
-        emit(state.rebuild((p0) => p0
-          ..statuses[event.statusKey] = Success()
-          ..listAllTodo = MapBuilder(listAllTodo)
-          ..listCompleteTodo =
-              SetBuilder(_getListTodoByType(listAllTodo.values, true))
-          ..listIncompleteTodo =
-              SetBuilder(_getListTodoByType(listAllTodo.values, false))));
-      } catch (e, s) {
-        emit(state.rebuild((p0) =>
-            p0..statuses[event.statusKey] = Error(message: e.toString())));
-      }
-    });
+    on<FetchListTodo>(
+      (event, emit) async {
+        try {
+          emit(state.rebuild((p0) => p0.statuses[event.statusKey] = Loading()));
+          final listAllTodo = await _todoRepo.getListTodo();
+          emit(state.rebuild(
+            (p0) => p0
+              ..statuses[event.statusKey] = Success()
+              ..listAllTodo = MapBuilder(listAllTodo)
+              ..listCompleteTodo =
+                  SetBuilder(_getListTodoByType(listAllTodo.values, true))
+              ..listIncompleteTodo =
+                  SetBuilder(_getListTodoByType(listAllTodo.values, false)),
+          ));
+        } catch (e, s) {
+          log("error $e, $s");
+          emit(state.rebuild((p0) =>
+              p0..statuses[event.statusKey] = Error(message: e.toString())));
+        }
+      },
+    );
 
     on<AddTodo>((event, emit) async {
       try {
